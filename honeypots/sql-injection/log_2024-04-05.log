@@ -1,0 +1,2 @@
+2024-04-05 22:03:38 SQL - [SELECT * FROM users WHERE username = 'admin' or 1=1 --' and password = 'qweqwe']
+2024-04-05 22:04:02 SQL - [SELECT * FROM users WHERE username = 'admin' or 1=1 --' and password = 'assssssssssssssssssss']
