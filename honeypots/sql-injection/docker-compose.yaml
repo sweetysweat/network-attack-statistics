@@ -3,14 +3,14 @@ version: '3.8'
 services:
   sql_injection:
     build:
-      context: ./src
-      dockerfile: sql_injection.Dockerfile
+      context: .
+      dockerfile: sql-injection.Dockerfile
       args:
-        - UID=${UID}
+        - HOST_UID=${HOST_UID}
     container_name: sql-injection
     ports:
       - "127.0.0.1:8080:80"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./logs:/var/log/app
+      - ./logs:/var/log/sql-injection
     restart: unless-stopped

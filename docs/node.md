@@ -2,7 +2,7 @@
 
 Tested only on Ubuntu 22.04
 
-Preps:
+## Preps
 
 ```shell
 apt update -y && apt upgrade -y
@@ -23,7 +23,7 @@ sed -i '/rotate/s/1/13/' /etc/logrotate.d/btmp
 sed -i 's/monthly/weekly/' /etc/logrotate.d/btmp
 ```
 
-ssh tarpit:
+## ssh tarpit
 
 ```shell
 apt install -y libssh-dev libjson-c-dev libpcap-dev libssl-dev
@@ -32,7 +32,7 @@ mkdir /var/log/ssh-honeypot
 touch /var/log/ssh-honeypot/ssh-honeypot.log.json
 chown -Rf nobody:nogroup /var/log/ssh-honeypot
 cd ~/ssh-honeypot && make && make install
-cat <<'EOF' >> ssh-honeypot
+cat <<'EOF' >> /etc/logrotate.d/ssh-honeypot
 /var/log/ssh-honeypot/ssh-honeypot.log
 /var/log/ssh-honeypot/ssh-honeypot.log.json
 {
@@ -46,7 +46,17 @@ EOF
 systemctl enable --now ssh-honeypot
 ```
 
-Suricata:
+## SQL-Injection
+
+Want to use this as a base:
+`https://github.com/SunshineCTF/SunshineCTF-2019-Public/tree/master/Web/WrestlerBook`
+
+```shell
+docker-compose build --no-cache --build-arg UID=$(id -u)
+docker-compose up -d
+```
+
+## Suricata
 
 ```shell
 add-apt-repository -y ppa:oisf/suricata-stable
