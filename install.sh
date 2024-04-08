@@ -10,7 +10,7 @@ else
     echo "SSH_PUBLIC is set. It will be unset after installation."
 fi
 
-# Update system and install basic packages
+# Update system and install basic packagesinstall.sh
 apt update -y && apt upgrade -y
 apt install -y mc nano iptables net-tools wget curl docker \
                docker-compose make cmake gcc g++ git nginx \
@@ -56,4 +56,17 @@ systemctl enable --now ssh-honeypot
 
 # Configure honeypot for SQL-Injection
 
+chown -Rf node:node honeypots
+cd honeypots/sql-injection
+su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id -u) && docker-compose up -d"
 
+# Configure suricata
+add-apt-repository -y ppa:oisf/suricata-stable
+apt-get update -y
+apt install -y suricata
+DEFAULT_INTERFACE=$(ip -o -4 route show to default | awk '{print $5}')
+DEFAULT_IP=$(ip -o -4 route show to default | awk '{print $9}')
+sed -i "/^IFACE=/s/eth0/$DEFAULT_INTERFACE/" /etc/default/suricata
+sed -i "/- interface:/s/eth0/$DEFAULT_INTERFACE/g" /etc/suricata/suricata.yaml
+sed -i "/[^#]HOME_NET:/s@\[\([^]]*\)\]@[$DEFAULT_IP\/32]@" /etc/suricata/suricata.yaml
+suricata-update

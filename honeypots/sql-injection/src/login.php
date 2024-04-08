@@ -14,7 +14,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "SELECT * FROM users WHERE username = '$myusername' and password = '$mypassword'";
 
     $log = date("Y-m-d H:i:s")." SQL:".$sql.PHP_EOL;
-    file_put_contents('/var/log/app/sql_'.date("Y-m-d").'.log', $log, FILE_APPEND);
+    file_put_contents('/var/log/sql-injection/sql_'.date("Y-m-d").'.log', $log, FILE_APPEND);
 
     $result = $db->query($sql);
     $row = $result->fetchArray(SQLITE3_ASSOC);
