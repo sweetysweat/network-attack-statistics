@@ -10,6 +10,7 @@ else
     echo "SSH_PUBLIC is set. It will be unset after installation."
 fi
 
+export DEBIAN_FRONTEND=noninteractive
 # Update system and install basic packagesinstall.sh
 apt update -y && apt upgrade -y
 apt install -y mc nano iptables net-tools wget curl docker \
@@ -61,12 +62,18 @@ cd honeypots/sql-injection
 su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id -u) && docker-compose up -d"
 
 # Configure suricata
+apt install software-properties-common
 add-apt-repository -y ppa:oisf/suricata-stable
-apt-get update -y
+apt update -y
 apt install -y suricata
-DEFAULT_INTERFACE=$(ip -o -4 route show to default | awk '{print $5}')
-DEFAULT_IP=$(ip -o -4 route show to default | awk '{print $9}')
+DEFAULT_INTERFACE=$(ip -4 route show default | grep -oP '(?<=dev )(\S+)')
+DEFAULT_IP=$(ip addr show dev $DEFAULT_INTERFACE | grep -oP '(?<=inet\s)\d+\.\d+\.\d+\.\d+')
 sed -i "/^IFACE=/s/eth0/$DEFAULT_INTERFACE/" /etc/default/suricata
 sed -i "/- interface:/s/eth0/$DEFAULT_INTERFACE/g" /etc/suricata/suricata.yaml
 sed -i "/[^#]HOME_NET:/s@\[\([^]]*\)\]@[$DEFAULT_IP\/32]@" /etc/suricata/suricata.yaml
 suricata-update
+sed -i '/rule-files:/a \ \ - /etc/suricata/rules/local.rules' /etc/suricata/suricata.yaml
+cd ../../suricata-rules && cp local.rules
+systemctl enable suricata && systemctl restart suricata
+
+# TO DO: add logrotation with compression cause to many scans т_т
