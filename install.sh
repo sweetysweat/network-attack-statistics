@@ -59,7 +59,7 @@ systemctl enable --now ssh-honeypot
 
 chown -Rf node:node honeypots
 cd honeypots/sql-injection
-su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node git git-u) && docker-compose up -d"
+su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node -u) && docker-compose up -d"
 
 # Configure suricata
 apt install -y software-properties-common
