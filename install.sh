@@ -12,7 +12,7 @@ fi
 
 export DEBIAN_FRONTEND=noninteractive
 # Update system and install basic packagesinstall.sh
-apt update -y && apt upgrade -y
+apt update -y && apt dist-upgrade -y
 apt install -y mc nano iptables net-tools wget curl docker \
                docker-compose make cmake gcc g++ git nginx \
                libssh-dev libjson-c-dev libpcap-dev libssl-dev
@@ -59,10 +59,10 @@ systemctl enable --now ssh-honeypot
 
 chown -Rf node:node honeypots
 cd honeypots/sql-injection
-su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id -u) && docker-compose up -d"
+su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node git git-u) && docker-compose up -d"
 
 # Configure suricata
-apt install software-properties-common
+apt install -y software-properties-common
 add-apt-repository -y ppa:oisf/suricata-stable
 apt update -y
 apt install -y suricata
