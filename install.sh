@@ -67,7 +67,6 @@ cp nginx.conf /etc/nginx/sites-enabled/sql-injection.conf
 nginx -s reload
 su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node -u) && docker-compose up -d"
 
-
 # Configure suricata
 apt install -y software-properties-common
 add-apt-repository -y ppa:oisf/suricata-stable
@@ -80,6 +79,10 @@ sed -i "/- interface:/s/eth0/$DEFAULT_INTERFACE/g" /etc/suricata/suricata.yaml
 sed -i "/[^#]HOME_NET:/s@\[\([^]]*\)\]@[$DEFAULT_IP\/32]@" /etc/suricata/suricata.yaml
 suricata-update
 sed -i '/rule-files:/a \ \ - /etc/suricata/rules/local.rules' /etc/suricata/suricata.yaml
+sed -i 's/filename: fast.log/filename: fast-%Y-%m-%d-%H:%M.log/' /etc/suricata/suricata.yaml
+sed -i '/filename: filename: fast-%Y-%m-%d-%H:%M.log/ a\      rotate-interval: day' /etc/suricata/suricata.yaml
+sed -i 's/filename: eve.json/filename: eve-%Y-%m-%d-%H:%M.json/' /etc/suricata/suricata.yaml
+sed -i '/filename: eve-%Y-%m-%d-%H:%M.json/ a\      rotate-interval: day' /etc/suricata/suricata.yaml
 cd ../../suricata-rules && cp local.rules
 systemctl enable suricata && systemctl restart suricata
 
