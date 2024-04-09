@@ -62,7 +62,8 @@ systemctl enable --now ssh-honeypot
 # Configure honeypot for SQL-Injection
 cd /opt/network-attack-statistics/honeypots/sql-injection
 chown -Rf node:node honeypots
-rm -f /etc/nginx/sites-enabled/*.conf  # 
+rm -f /etc/nginx/sites-enabled/default
+nginx -s reload
 cp nginx.conf /etc/nginx/sites-enabled/sql-injection.conf
 su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node -u) && docker-compose up -d"
 
