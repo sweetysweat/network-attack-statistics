@@ -2,6 +2,8 @@
 
 Just a diploma project xD
 
+Before running the installation script check that there are no active nginx conf files cause script will remove them (or change `# Configure honeypot for SQL-Injection` section in `install.sh`).
+
 ## Preps
 
 ```shell

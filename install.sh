@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# TO DO 
 if [ -z ${SSH_PUBLIC+x} ]
 then
     # read SSH_PUBLIC (maybe change to this...)
@@ -11,6 +10,7 @@ else
 fi
 
 export DEBIAN_FRONTEND=noninteractive
+
 # Update system and install basic packagesinstall.sh
 apt update -y && apt dist-upgrade -y
 apt install -y mc nano iptables net-tools wget curl docker \
@@ -39,6 +39,10 @@ sed -i 's/monthly/weekly/' /etc/logrotate.d/btmp
 
 # Configure SSH honeypot
 git clone https://github.com/sweetysweat/ssh-honeypot.git /opt/ssh-honeypot
+cd /opt/ssh-honeypot
+make
+make install
+systemctl enable --now ssh-honeypot
 mkdir /var/log/ssh-honeypot
 touch /var/log/ssh-honeypot/ssh-honeypot.log.json
 chown -Rf nobody:nogroup /var/log/ssh-honeypot
@@ -56,10 +60,12 @@ EOF
 systemctl enable --now ssh-honeypot
 
 # Configure honeypot for SQL-Injection
-
+cd /opt/network-attack-statistics/honeypots/sql-injection
 chown -Rf node:node honeypots
-cd honeypots/sql-injection
+rm -f /etc/nginx/sites-enabled/*.conf  # 
+cp nginx.conf /etc/nginx/sites-enabled/sql-injection.conf
 su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node -u) && docker-compose up -d"
+
 
 # Configure suricata
 apt install -y software-properties-common
