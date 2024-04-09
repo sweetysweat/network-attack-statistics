@@ -80,7 +80,7 @@ sed -i "/[^#]HOME_NET:/s@\[\([^]]*\)\]@[$DEFAULT_IP\/32]@" /etc/suricata/suricat
 suricata-update
 sed -i '/rule-files:/a \ \ - /etc/suricata/rules/local.rules' /etc/suricata/suricata.yaml
 sed -i 's/filename: fast.log/filename: fast-%Y-%m-%d-%H:%M.log/' /etc/suricata/suricata.yaml
-sed -i '/filename: filename: fast-%Y-%m-%d-%H:%M.log/ a\      rotate-interval: day' /etc/suricata/suricata.yaml
+sed -i '/filename: fast-%Y-%m-%d-%H:%M.log/ a\      rotate-interval: day' /etc/suricata/suricata.yaml
 sed -i 's/filename: eve.json/filename: eve-%Y-%m-%d-%H:%M.json/' /etc/suricata/suricata.yaml
 sed -i '/filename: eve-%Y-%m-%d-%H:%M.json/ a\      rotate-interval: day' /etc/suricata/suricata.yaml
 cd ../../suricata-rules && cp local.rules
