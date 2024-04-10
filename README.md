@@ -9,7 +9,6 @@ Before running the installation script check that the default conf file in nginx
 ```shell
 apt update -y
 apt install -y git
-cd /opt
 git clone https://github.com/sweetysweat/network-attack-statistics.git /opt/network-attack-statistics
 cd /opt/network-attack-statistics
 chmod +x install.sh

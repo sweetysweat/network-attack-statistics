@@ -15,7 +15,7 @@ export DEBIAN_FRONTEND=noninteractive
 apt update -y && apt dist-upgrade -y
 apt install -y mc nano iptables net-tools wget curl docker \
                docker-compose make cmake gcc g++ git nginx \
-               libssh-dev libjson-c-dev libpcap-dev libssl-dev
+               libssh-dev libjson-c-dev libpcap-dev libssl-dev logrotate
 
 # Create and configure defauld user
 useradd -mG docker -s /bin/bash node
@@ -52,6 +52,7 @@ cat <<'EOF' >> /etc/logrotate.d/ssh-honeypot
 {
     missingok
     weekly
+    compress
     create 0644 nobody nogroup
     rotate 13
     su nobody nogroup
@@ -60,8 +61,9 @@ EOF
 systemctl enable --now ssh-honeypot
 
 # Configure honeypot for SQL-Injection
-cd /opt/network-attack-statistics/honeypots/sql-injection
+cd /opt/network-attack-statistics/
 chown -Rf node:node honeypots
+cd honeypots/sql-injection
 rm -f /etc/nginx/sites-enabled/default
 cp nginx.conf /etc/nginx/sites-enabled/sql-injection.conf
 nginx -s reload
@@ -84,6 +86,19 @@ sed -i '/filename: fast-%Y-%m-%d-%H:%M.log/ a\      rotate-interval: day' /etc/s
 sed -i 's/filename: eve.json/filename: eve-%Y-%m-%d-%H:%M.json/' /etc/suricata/suricata.yaml
 sed -i '/filename: eve-%Y-%m-%d-%H:%M.json/ a\      rotate-interval: day' /etc/suricata/suricata.yaml
 cd ../../suricata-rules && cp local.rules
-systemctl enable suricata && systemctl restart suricata
-
-# TO DO: add logrotation with compression cause to many scans т_т
+cat <<'EOF' >> /etc/logrotate.d/suricata
+/var/log/suricata/*.log /var/log/suricata/*.json
+{
+    daily
+    rotate 120
+    missingok
+    compress
+    notifempty
+    create
+    sharedscripts
+    postrotate
+            /bin/kill -HUP `cat /var/run/suricata.pid 2>/dev/null` 2>/dev/null || true
+    endscript
+}
+EOF
+systemctl enable --now suricata && systemctl restart suricata
