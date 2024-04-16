@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: cowrie
+    ports:
+      - "2222:2222"
+    volumes:
+      - ./config/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt
+      - cowrie-var:/cowrie/cowrie-git/var
+    restart: always
+
+volumes:
+  cowrie-var:

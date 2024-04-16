@@ -1,0 +1,3 @@
+root:x:P@ssw0rd
+tomcat:x:tomcat
+oracle:x:oracle
