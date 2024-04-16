@@ -8,8 +8,13 @@ services:
       - "2222:2222"
     volumes:
       - ./config/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt
-      - cowrie-var:/cowrie/cowrie-git/var
+      - cowrie-log:/cowrie/cowrie-git/var/log/cowrie
     restart: always
 
 volumes:
-  cowrie-var:
+  cowrie-log:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/var/log/cowrie'
