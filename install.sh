@@ -42,9 +42,10 @@ sed -i 's/monthly/weekly/' /etc/logrotate.d/btmp
 
 # Configure SSH honeypot (cowrie)
 cd /opt/network-attack-statistics/honeypots/cowrie
+mkdir /var/log/cowrie
 docker-compose up -d
-# TO DO: configure log rotation
 
+# Maybe will return to /opt/ssh-honeypot
 # git clone https://github.com/sweetysweat/ssh-honeypot.git /opt/ssh-honeypot
 # cd /opt/ssh-honeypot
 # make
@@ -68,10 +69,8 @@ docker-compose up -d
 # systemctl enable --now ssh-honeypot
 
 # Configure honeypot for SQL-Injection
-cd /opt/network-attack-statistics/
-chown -Rf node:node honeypots
-cd honeypots/sql-injection
-rm -f /etc/nginx/sites-enabled/default
+cd /opt/network-attack-statistics/honeypots/sql-injection
+rm -f /etc/nginx/sites-enabled/default  # pls reconfigure if you need it
 cp nginx.conf /etc/nginx/sites-enabled/sql-injection.conf
 nginx -s reload
 su node -c "docker-compose build --no-cache --build-arg HOST_UID=$(id node -u) && docker-compose up -d"
@@ -108,4 +107,4 @@ cat <<'EOF' >> /etc/logrotate.d/suricata
     endscript
 }
 EOF
-systemctl enable --now suricata && systemctl restart suricata
+systemctl enable suricata && systemctl restart suricata
