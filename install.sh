@@ -16,7 +16,7 @@ apt update -y && apt dist-upgrade -y
 apt install -y mc nano iptables net-tools wget curl docker \
                docker-compose make cmake gcc g++ git nginx \
                libssh-dev libjson-c-dev libpcap-dev libssl-dev \
-               logrotate
+               logrotate nano
 
 # Create and configure defauld user
 useradd -mG docker -s /bin/bash node
@@ -68,7 +68,6 @@ docker-compose up -d
 # EOF
 # systemctl enable --now ssh-honeypot
 
-# Configure honeypot for SQL-Injection
 cd /opt/network-attack-statistics/honeypots/sql-injection
 rm -f /etc/nginx/sites-enabled/default  # pls reconfigure if you need it
 cp nginx.conf /etc/nginx/sites-enabled/sql-injection.conf

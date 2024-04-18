@@ -5,7 +5,7 @@ services:
     image: cowrie/cowrie:latest
     container_name: cowrie
     ports:
-      - "2222:2222"
+      - "22:2222"
     volumes:
       - ./config/userdb.txt:/cowrie/cowrie-git/etc/userdb.txt
       - cowrie-log:/cowrie/cowrie-git/var/log/cowrie
