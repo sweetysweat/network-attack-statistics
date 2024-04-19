@@ -22,7 +22,7 @@ apt install -y mc nano iptables net-tools wget curl docker \
 useradd -mG docker -s /bin/bash node
 mkdir /home/node/.ssh
 chmod 700 /home/node/.ssh
-echo "ssh-rsa $SSH_PUBLIC" > /home/node/.ssh/authorized_keys
+echo "$SSH_PUBLIC" > /home/node/.ssh/authorized_keys
 chown -Rf node:node /home/node/.ssh/
 
 # Configure SSH
@@ -41,32 +41,10 @@ sed -i '/rotate/s/1/13/' /etc/logrotate.d/btmp
 sed -i 's/monthly/weekly/' /etc/logrotate.d/btmp
 
 # Configure SSH honeypot (cowrie)
+# Maybe will return to https://github.com/sweetysweat/ssh-honeypot
 cd /opt/network-attack-statistics/honeypots/cowrie
 mkdir /var/log/cowrie
 docker-compose up -d
-
-# Maybe will return to /opt/ssh-honeypot
-# git clone https://github.com/sweetysweat/ssh-honeypot.git /opt/ssh-honeypot
-# cd /opt/ssh-honeypot
-# make
-# make install
-# systemctl enable --now ssh-honeypot
-# mkdir /var/log/ssh-honeypot
-# touch /var/log/ssh-honeypot/ssh-honeypot.log.json
-# chown -Rf nobody:nogroup /var/log/ssh-honeypot
-# cat <<'EOF' >> /etc/logrotate.d/ssh-honeypot
-# /var/log/ssh-honeypot/ssh-honeypot.log
-# /var/log/ssh-honeypot/ssh-honeypot.log.json
-# {
-#     missingok
-#     weekly
-#     compress
-#     create 0644 nobody nogroup
-#     rotate 13
-#     su nobody nogroup
-# }
-# EOF
-# systemctl enable --now ssh-honeypot
 
 cd /opt/network-attack-statistics/honeypots/sql-injection
 rm -f /etc/nginx/sites-enabled/default  # pls reconfigure if you need it
