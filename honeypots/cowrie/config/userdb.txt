@@ -1,3 +1,2 @@
-root:x:P@ssw0rd
+root:x:xxXX123456!
 tomcat:x:tomcat
-oracle:x:oracle
